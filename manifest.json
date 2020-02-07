@@ -5,6 +5,11 @@
   "author": "Philipp Meißner <pm@zeit.dev>",
   "homepage_url": "https://philippmeissner.dev",
   "manifest_version": 2,
+  "icons": {
+    "16": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  },
   "web_accessible_resources": [
     "gfn.json"
   ],
