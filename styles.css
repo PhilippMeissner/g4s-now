@@ -1,0 +1,125 @@
+body {
+  background-color: #673AB7;
+}
+
+.checkmark-container {
+  margin: 100px auto;
+  background-color: #4CAF50;
+  width: 250px;
+  height: 250px;
+  border-radius: 125px;
+}
+
+.checkmark-container.cross {
+  animation: containercross ease-out 0.5s forwards;
+}
+
+.checkmark-container.check {
+  animation: containercheck ease-out 0.5s forwards;
+}
+
+.mark {
+  margin: 0 auto;
+  padding: 75px;
+  height: 100px;
+  width: 100px;
+}
+
+.mark div {
+  background-color: white;
+  position: absolute;
+}
+
+.mark div:nth-child(1) {
+  height: 10px;
+  width: 100px;
+  transform: translate(20px, 50px) rotate(-45deg);
+}
+
+.mark div:nth-child(1).cross {
+  animation: div1cross ease-out 0.5s forwards;
+}
+
+.mark div:nth-child(1).check {
+  animation: div1check ease-out 0.5s forwards;
+}
+
+.mark div:nth-child(2) {
+  height: 10px;
+  width: 50px;
+  transform: translate(-1px, 68px) rotate(45deg);
+}
+
+.mark div:nth-child(2).cross {
+  animation: div2cross ease-out 0.5s forwards;
+}
+
+.mark div:nth-child(2).check {
+  animation: div2check ease-out 0.5s forwards;
+}
+
+@keyframes div1cross {
+  0% {
+    transform: translate(20px, 50px) rotate(-45deg);
+  }
+  100% {
+    transform: translate(-10px, 45px) rotate(135deg);
+    width: 120px;
+  }
+}
+
+@keyframes div2cross {
+  0% {
+    transform: translate(-1px, 68px) rotate(45deg);
+    width: 50px;
+  }
+  100% {
+    transform: translate(-10px, 45px) rotate(-135deg);
+    width: 120px;
+  }
+}
+
+@keyframes containercross {
+  0% {
+    background-color: #4CAF50;
+  }
+  70% {
+    background-color: #4CAF50;
+  }
+  100% {
+    background-color: #F44336;
+  }
+}
+
+@keyframes div1check {
+  100% {
+    transform: translate(20px, 50px) rotate(-45deg);
+  }
+  0% {
+    transform: translate(-10px, 45px) rotate(135deg);
+    width: 120px;
+  }
+}
+
+@keyframes div2check {
+  100% {
+    transform: translate(-1px, 68px) rotate(45deg);
+    width: 50px;
+  }
+  0% {
+    transform: translate(-10px, 45px) rotate(-135deg);
+    width: 120px;
+  }
+}
+
+@keyframes containercheck {
+  100% {
+    background-color: #4CAF50;
+  }
+  70% {
+    background-color: #F44336;
+  }
+  0% {
+    background-color: #F44336;
+  }
+}
