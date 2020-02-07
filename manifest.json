@@ -1,5 +1,6 @@
 {
   "name": "G4s Now!",
+  "short_name": "G4s Now!",
   "description": "Checks for GeForce Now compatibility when browsing steam",
   "version": "0.1",
   "author": "Philipp Meißner <pm@zeit.dev>",
