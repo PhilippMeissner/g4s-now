@@ -7,14 +7,14 @@
   "homepage_url": "https://philippmeissner.dev",
   "manifest_version": 2,
   "icons": {
-    "16": "logo.png",
-    "48": "logo.png",
-    "128": "logo.png"
+    "16": "assets/logo.png",
+    "48": "assets/logo.png",
+    "128": "assets/logo.png"
   },
   "web_accessible_resources": [
-    "gfn.json",
-    "cross.svg",
-    "check.svg"
+    "assets/gfn.json",
+    "assets/cross.svg",
+    "assets/check.svg"
   ],
   "content_scripts": [
     {
@@ -25,7 +25,7 @@
         "styles.css"
       ],
       "js": [
-        "./external_scripts/jquery-3.4.1.min.js",
+        "./externals/jquery-3.4.1.min.js",
         "content_script.js"
       ]
     }
