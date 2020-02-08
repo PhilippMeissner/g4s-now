@@ -1,16 +1,15 @@
 function injectCheckMarkElement(titleElement, found) {
-  const className = found ? 'check' : 'cross';
+  const logo = found ? chrome.runtime.getURL('./check.svg') : chrome.runtime.getURL('./cross.svg');
+  const title = found ? 'GeForce Now compatible' : 'GeForce Now incompatible';
 
   const CHECKMARK_HTML_CODE = `
-    <div class="checkmark-container ${className}">
-      <div class="mark">
-        <div class="${className}"></div>
-        <div class="${className}"></div>
-      </div>
+    <div class="g4s-now-container">
+      <img src="${logo}" class="logo spinner" title="${title}" alt="${title}"/>
     </div>
   `;
 
-  $(CHECKMARK_HTML_CODE).appendTo(titleElement);
+  $(titleElement).css('display', 'inline-block');
+  $(titleElement).after($(CHECKMARK_HTML_CODE));
 }
 
 function markAsSupported(titleElem) {

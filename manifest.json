@@ -12,7 +12,9 @@
     "128": "logo.png"
   },
   "web_accessible_resources": [
-    "gfn.json"
+    "gfn.json",
+    "cross.svg",
+    "check.svg"
   ],
   "content_scripts": [
     {
