@@ -1,5 +1,5 @@
 function injectCheckMarkElement(titleElement, found) {
-  const logo = found ? chrome.runtime.getURL('./check.svg') : chrome.runtime.getURL('./cross.svg');
+  const logo = found ? chrome.runtime.getURL('./assets/check.svg') : chrome.runtime.getURL('./assets/cross.svg');
   const title = found ? 'GeForce Now compatible' : 'GeForce Now incompatible';
 
   const CHECKMARK_HTML_CODE = `
@@ -50,7 +50,7 @@ function isGameSupported(source, gameTitle, gameUrl) {
 
 function fetchGames() {
   // Original source: https://static.nvidiagrid.net/supported-public-game-list/gfnpc.json
-  return $.getJSON(chrome.runtime.getURL('./gfn.json'));
+  return $.getJSON(chrome.runtime.getURL('./assets/gfn.json'));
 }
 
 async function init() {
@@ -63,7 +63,7 @@ async function init() {
     const found = isGameSupported(gamesArr, titleElem.innerText, window.location.href);
     found ? markAsSupported(titleElem) : markAsNotSupported(titleElem);
   } else {
-    console.error('TITLE NOT FOUND FOOOOOOOOOOO');
+    console.error('TITLE NOT FOUND');
   }
 }
 
