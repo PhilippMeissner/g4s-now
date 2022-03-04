@@ -42,7 +42,7 @@ function isGameSupported(source, gameTitle, gameUrl) {
 
 function fetchGames() {
   // Original source: https://static.nvidiagrid.net/supported-public-game-list/gfnpc.json
-  return $.getJSON('https://static.nvidiagrid.net/supported-public-game-list/gfnpc.json'));
+  return $.getJSON('https://static.nvidiagrid.net/supported-public-game-list/gfnpc.json');
 }
 
 async function init() {
