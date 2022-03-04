@@ -12,14 +12,6 @@ function injectCheckMarkElement(titleElement, found) {
   $(titleElement).after($(CHECKMARK_HTML_CODE));
 }
 
-function markAsSupported(titleElem) {
-  injectCheckMarkElement(titleElem, true);
-}
-
-function markAsNotSupported(titleElem) {
-  injectCheckMarkElement(titleElem, false);
-}
-
 function isGameSupported(source, gameTitle, gameUrl) {
   let found;
   // For some reason steam identifies it self as game, but is isn't. So we just remove it.
@@ -50,7 +42,7 @@ function isGameSupported(source, gameTitle, gameUrl) {
 
 function fetchGames() {
   // Original source: https://static.nvidiagrid.net/supported-public-game-list/gfnpc.json
-  return $.getJSON(chrome.runtime.getURL('./assets/gfn.json'));
+  return $.getJSON('https://static.nvidiagrid.net/supported-public-game-list/gfnpc.json');
 }
 
 async function init() {
@@ -61,7 +53,7 @@ async function init() {
     const gamesArr = await fetchGames();
 
     const found = isGameSupported(gamesArr, titleElem.innerText, window.location.href);
-    found ? markAsSupported(titleElem) : markAsNotSupported(titleElem);
+    found ? injectCheckMarkElement(titleElem, true) : injectCheckMarkElement(titleElem, false);
   } else {
     console.error('TITLE NOT FOUND');
   }
