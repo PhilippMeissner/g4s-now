@@ -1,62 +1,79 @@
-function injectCheckMarkElement(titleElement, found) {
-  const logo = found ? chrome.runtime.getURL('./assets/check.svg') : chrome.runtime.getURL('./assets/cross.svg');
-  const title = found ? 'GeForce Now compatible' : 'GeForce Now incompatible';
+const injectIcon = (titleElement, isSupported) => {
+  const logo = isSupported ? chrome.runtime.getURL('./assets/check.svg') : chrome.runtime.getURL('./assets/cross.svg');
+  const title = isSupported ? 'GeForce Now compatible' : 'GeForce Now incompatible';
 
   const CHECKMARK_HTML_CODE = `
-    <div class="g4s-now-container">
-      <img src="${logo}" class="logo spinner" title="${title}" alt="${title}"/>
-    </div>
+    <img src="${logo}" class="logo spinner" title="${title}" alt="${title}"/>
   `;
 
-  $(titleElement).css('display', 'inline-block');
-  $(titleElement).after($(CHECKMARK_HTML_CODE));
+  titleElement.style.display = 'inline-block';
+  const containerDiv = document.createElement('div');
+  containerDiv.classList.add('g4s-now-container');
+  containerDiv.innerHTML = CHECKMARK_HTML_CODE;
+  titleElement.after(containerDiv);
 }
 
-function isGameSupported(source, gameTitle, gameUrl) {
-  let found;
-  // For some reason steam identifies it self as game, but is isn't. So we just remove it.
-  const STEAM_CLIENT_ID = 100021711;
-  const games = source.filter(function(game) {
-    return game.id !== STEAM_CLIENT_ID;
+const isGameSupported = (gameList, gameTitle) => {
+  const normalizedGameTitle = gameTitle.replace(/\W/g, '').toLowerCase();
+
+  return !!gameList.find((game) => {
+    return game.title.replace(/\W/g, '').toLowerCase() === normalizedGameTitle;
   });
+}
 
-  // #1 Search for matching steamUrl (most precise)
-  // -> Remove games without proper url
-  const gamesWithSteamUrl = games.filter(function(game) {
-    return game.steamUrl !== '';
-  });
-
-  found = !!(gamesWithSteamUrl.find(function(game) {
-    return gameUrl.includes(game.steamUrl);
-  }));
-
-  // #2 Search for matching title if nothing found yet
-  // -> Remove by matching RegeExp ("\w")
-  if (!found) {
-    found = !!(games.find(function(game) {
-      return game.title.replace(/\W/g, '') === gameTitle.replace(/\W/g, '');
-    }));
+const fetchGames = async () => {
+  const games = [];
+  const initialPayload = `{
+    apps(country: "US", language: "en_US") {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      items {
+        title
+      }
+    }
   }
-  return found;
-}
+  `;
 
-function fetchGames() {
-  // Original source: https://static.nvidiagrid.net/supported-public-game-list/gfnpc.json
-  return $.getJSON('https://static.nvidiagrid.net/supported-public-game-list/gfnpc.json');
-}
+  const endCursorPlaceholder = '%ENDCURSOR%';
+  const PAYLOAD_TEMPLATE = `{
+    apps(country: "US", language: "en_US", after:"${endCursorPlaceholder}") {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      items {
+        title
+      }
+    }
+  }`
 
-async function init() {
-  const elems = $('.apphub_AppName');
+  let payload = initialPayload;
+  let keepGoing = true;
 
-  if (!!elems && elems.length > 0) {
-    const titleElem = elems[0];
-    const gamesArr = await fetchGames();
+  while (keepGoing) {
+    const { data } = await fetch('https://api-prod.nvidia.com/gfngames/v1/gameList', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: payload
+    }).then((response) => response.json());
 
-    const found = isGameSupported(gamesArr, titleElem.innerText, window.location.href);
-    found ? injectCheckMarkElement(titleElem, true) : injectCheckMarkElement(titleElem, false);
-  } else {
-    console.error('TITLE NOT FOUND');
+    games.push(data.apps.items);
+    payload = PAYLOAD_TEMPLATE.replace(endCursorPlaceholder, data.apps.pageInfo.endCursor);
+    keepGoing = data.apps.pageInfo.hasNextPage;
   }
+
+  return games.flat();
 }
 
-init();
+const titleElement = document.getElementById('appHubAppName');
+
+if (!!titleElement) {
+  fetchGames().then((gameList) => {
+    const isSupported = isGameSupported(gameList, titleElement.innerText);
+    injectIcon(titleElement, isSupported);
+  })
+}
