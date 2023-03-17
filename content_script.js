@@ -1,6 +1,6 @@
-function injectCheckMarkElement(titleElement, found) {
-  const logo = found ? chrome.runtime.getURL('./assets/check.svg') : chrome.runtime.getURL('./assets/cross.svg');
-  const title = found ? 'GeForce Now compatible' : 'GeForce Now incompatible';
+const injectIcon = (titleElement, isSupported) => {
+  const logo = isSupported ? chrome.runtime.getURL('./assets/check.svg') : chrome.runtime.getURL('./assets/cross.svg');
+  const title = isSupported ? 'GeForce Now compatible' : 'GeForce Now incompatible';
 
   const CHECKMARK_HTML_CODE = `
     <div class="g4s-now-container">
@@ -12,7 +12,7 @@ function injectCheckMarkElement(titleElement, found) {
   $(titleElement).after($(CHECKMARK_HTML_CODE));
 }
 
-function isGameSupported(gameList, gameTitle) {
+const isGameSupported = (gameList, gameTitle) => {
   const normalizedGameTitle = gameTitle.replace(/\W/g, '').toLowerCase();
 
   return !!gameList.find((game) => {
@@ -20,39 +20,39 @@ function isGameSupported(gameList, gameTitle) {
   });
 }
 
-async function fetchGames() {
+const fetchGames = async () => {
   const games = [];
   const initialPayload = `{
-  apps(country: "US", language: "en_US") {
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-    items {
-      title
+    apps(country: "US", language: "en_US") {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      items {
+        title
+      }
     }
   }
-}
-`;
+  `;
 
   const endCursorPlaceholder = '%ENDCURSOR%';
   const PAYLOAD_TEMPLATE = `{
-  apps(country: "US", language: "en_US", after:"${endCursorPlaceholder}") {
-    pageInfo {
-      endCursor
-      hasNextPage
+    apps(country: "US", language: "en_US", after:"${endCursorPlaceholder}") {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      items {
+        title
+      }
     }
-    items {
-      title
-    }
-  }
-}`
+  }`
+
   let payload = initialPayload;
   let keepGoing = true;
 
   while (keepGoing) {
-    console.log('fetching');
-    const response = await fetch('https://api-prod.nvidia.com/gfngames/v1/gameList', {
+    const { data } = await fetch('https://api-prod.nvidia.com/gfngames/v1/gameList', {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
@@ -60,27 +60,19 @@ async function fetchGames() {
       body: payload
     }).then((response) => response.json());
 
-    console.log('received', response.data.apps.items);
-    games.push(response.data.apps.items);
-    payload = PAYLOAD_TEMPLATE.replace(endCursorPlaceholder, response.data.apps.pageInfo.endCursor);
-    keepGoing = response.data.apps.pageInfo.hasNextPage;
+    games.push(data.apps.items);
+    payload = PAYLOAD_TEMPLATE.replace(endCursorPlaceholder, data.apps.pageInfo.endCursor);
+    keepGoing = data.apps.pageInfo.hasNextPage;
   }
 
   return games.flat();
 }
 
-async function init() {
-  const titleElement = document.getElementById('appHubAppName');
+const titleElement = document.getElementById('appHubAppName');
 
-  if (!!titleElement) {
-    const gameList = await fetchGames();
-
-    isGameSupported(gameList, titleElement.innerText)
-      ? injectCheckMarkElement(titleElement, true)
-      : injectCheckMarkElement(titleElement, false);
-  } else {
-    console.error('TITLE NOT FOUND ON PAGE');
-  }
+if (!!titleElement) {
+  fetchGames().then((gameList) => {
+    const isSupported = isGameSupported(gameList, titleElement.innerText);
+    injectIcon(titleElement, isSupported);
+  })
 }
-
-init();
