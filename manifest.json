@@ -5,7 +5,7 @@
   "version": "0.3",
   "author": "Philipp Meißner <philipp.meissner@dyve.agency>",
   "homepage_url": "https://philippmeissner.dev",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "icons": {
     "16": "assets/logo.png",
     "48": "assets/logo.png",
