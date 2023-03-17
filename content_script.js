@@ -11,8 +11,6 @@ const injectIcon = (titleElement, isSupported) => {
   containerDiv.classList.add('g4s-now-container');
   containerDiv.innerHTML = CHECKMARK_HTML_CODE;
   titleElement.after(containerDiv);
-  // $(titleElement).css('display', 'inline-block');
-  // $(titleElement).after($(CHECKMARK_HTML_CODE));
 }
 
 const isGameSupported = (gameList, gameTitle) => {
