@@ -60,7 +60,7 @@ async function fetchGames() {
       body: payload
     }).then((response) => response.json());
 
-    console.log('received', response.data.apps.items.length);
+    console.log('received', response.data.apps.items);
     games.push(response.data.apps.items);
     payload = PAYLOAD_TEMPLATE.replace(endCursorPlaceholder, response.data.apps.pageInfo.endCursor);
     keepGoing = response.data.apps.pageInfo.hasNextPage;
