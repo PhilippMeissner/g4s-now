@@ -3,13 +3,14 @@ const injectIcon = (titleElement, isSupported) => {
   const title = isSupported ? 'GeForce Now compatible' : 'GeForce Now incompatible';
 
   const CHECKMARK_HTML_CODE = `
-    <div class="g4s-now-container">
-      <img src="${logo}" class="logo spinner" title="${title}" alt="${title}"/>
-    </div>
+    <img src="${logo}" class="logo spinner" title="${title}" alt="${title}"/>
   `;
 
   titleElement.style.display = 'inline-block';
-  titleElement.after(CHECKMARK_HTML_CODE);
+  const containerDiv = document.createElement('div');
+  containerDiv.classList.add('g4s-now-container');
+  containerDiv.innerHTML = CHECKMARK_HTML_CODE;
+  titleElement.after(containerDiv);
   // $(titleElement).css('display', 'inline-block');
   // $(titleElement).after($(CHECKMARK_HTML_CODE));
 }
