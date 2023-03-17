@@ -70,7 +70,7 @@ async function fetchGames() {
 }
 
 async function init() {
-  const titleElement = $('#appHubAppName');
+  const titleElement = document.getElementById('appHubAppName');
 
   if (!!titleElement) {
     const gameList = await fetchGames();
@@ -79,7 +79,7 @@ async function init() {
       ? injectCheckMarkElement(titleElement, true)
       : injectCheckMarkElement(titleElement, false);
   } else {
-    console.error('GAME NOT FOUND');
+    console.error('TITLE NOT FOUND ON PAGE');
   }
 }
 
