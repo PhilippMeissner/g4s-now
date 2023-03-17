@@ -8,8 +8,10 @@ const injectIcon = (titleElement, isSupported) => {
     </div>
   `;
 
-  $(titleElement).css('display', 'inline-block');
-  $(titleElement).after($(CHECKMARK_HTML_CODE));
+  titleElement.style.display = 'inline-block';
+  titleElement.after(CHECKMARK_HTML_CODE);
+  // $(titleElement).css('display', 'inline-block');
+  // $(titleElement).after($(CHECKMARK_HTML_CODE));
 }
 
 const isGameSupported = (gameList, gameTitle) => {
