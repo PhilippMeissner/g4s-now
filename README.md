@@ -1,4 +1,4 @@
-# G4s NOW!
+# GeForce NOW game checker for STEAM store as a chrome extension
 
 This is a small extension built to easily find out if a game that you are browsing on steam is compatible with GeForce Now.
 If it is, a small check-mark will be added to the title, where as otherwise a cross will be shown.
