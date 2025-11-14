@@ -51,9 +51,10 @@ const fetchGames = async () => {
 
   let payload = initialPayload;
   let keepGoing = true;
+  const API_URL = 'https://api-prod.nvidia.com/services/gfngames/v1/gameList';
 
   while (keepGoing) {
-    const { data } = await fetch('https://api-prod.nvidia.com/gfngames/v1/gameList', {
+    const { data } = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
