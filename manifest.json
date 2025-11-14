@@ -2,7 +2,7 @@
   "name": "G4s Now!",
   "short_name": "G4s Now!",
   "description": "Checks for GeForce Now compatibility when browsing steam",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "author": "Philipp Meißner <philipp.meissner@dyve.agency>",
   "homepage_url": "https://philippmeissner.dev",
   "manifest_version": 2,
