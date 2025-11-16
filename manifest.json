@@ -20,6 +20,9 @@
       "matches": ["https://store.steampowered.com/*"]
     }
   ],
+  "permissions": [
+    "storage"
+  ],
   "host_permissions": [
     "https://api-prod.nvidia.com/*",
     "https://store.steampowered.com/*"

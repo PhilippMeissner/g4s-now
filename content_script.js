@@ -22,6 +22,33 @@ const isGameSupported = (gameList, gameTitle) => {
 }
 
 const fetchGames = async () => {
+  const CACHE_KEY = 'g4s_game_list_cache_v1';
+  const CACHE_TTL_MS = 60 * 60 * 1000;
+
+  const getCache = () => new Promise((resolve) => {
+    try {
+      chrome.storage.local.get([CACHE_KEY], (result) => {
+        resolve(result[CACHE_KEY] || null);
+      });
+    } catch (e) {
+      resolve(null);
+    }
+  });
+
+  const setCache = (value) => new Promise((resolve) => {
+    try {
+      chrome.storage.local.set({ [CACHE_KEY]: value }, () => resolve());
+    } catch (e) {
+      resolve();
+    }
+  });
+
+  const now = Date.now();
+  const cached = await getCache();
+  if (cached && typeof cached.savedAt === 'number' && (now - cached.savedAt) < CACHE_TTL_MS && Array.isArray(cached.games)) {
+    return cached.games;
+  }
+
   const games = [];
   const initialPayload = `{
     apps(country: "US", language: "en_US") {
@@ -53,21 +80,32 @@ const fetchGames = async () => {
   let keepGoing = true;
   const API_URL = 'https://api-prod.nvidia.com/services/gfngames/v1/gameList';
 
-  while (keepGoing) {
-    const { data } = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-      body: payload
-    }).then((response) => response.json());
+  try {
+    while (keepGoing) {
+      const { data } = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+        body: payload
+      }).then((response) => response.json());
 
-    games.push(data.apps.items);
-    payload = PAYLOAD_TEMPLATE.replace(endCursorPlaceholder, data.apps.pageInfo.endCursor);
-    keepGoing = data.apps.pageInfo.hasNextPage;
+      games.push(data.apps.items);
+      payload = PAYLOAD_TEMPLATE.replace(endCursorPlaceholder, data.apps.pageInfo.endCursor);
+      keepGoing = data.apps.pageInfo.hasNextPage;
+    }
+
+    const flatGames = games.flat();
+    // Save to cache
+    await setCache({ games: flatGames, savedAt: Date.now() });
+    return flatGames;
+  } catch (err) {
+    // If network fails but we have any cached games, return them as a fallback
+    if (cached && Array.isArray(cached.games)) {
+      return cached.games;
+    }
+    throw err;
   }
-
-  return games.flat();
 }
 
 const titleElement = document.getElementById('appHubAppName');
