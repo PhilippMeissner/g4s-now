@@ -15,7 +15,8 @@
     {
       "resources": [
         "assets/cross.svg",
-        "assets/check.svg"
+        "assets/check.svg",
+        "assets/spinner.svg"
       ],
       "matches": ["https://store.steampowered.com/*"]
     }
