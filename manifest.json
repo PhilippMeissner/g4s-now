@@ -2,18 +2,27 @@
   "name": "G4s Now!",
   "short_name": "G4s Now!",
   "description": "Checks for GeForce Now compatibility when browsing steam",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "Philipp Meißner <philipp.meissner@dyve.agency>",
   "homepage_url": "https://philippmeissner.dev",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "icons": {
     "16": "assets/logo.png",
     "48": "assets/logo.png",
     "128": "assets/logo.png"
   },
   "web_accessible_resources": [
-    "assets/cross.svg",
-    "assets/check.svg"
+    {
+      "resources": [
+        "assets/cross.svg",
+        "assets/check.svg"
+      ],
+      "matches": ["https://store.steampowered.com/*"]
+    }
+  ],
+  "host_permissions": [
+    "https://api-prod.nvidia.com/*",
+    "https://store.steampowered.com/*"
   ],
   "content_scripts": [
     {
